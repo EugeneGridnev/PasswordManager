@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/passwordListFragment">
+
+    <fragment
+        android:id="@+id/passwordListFragment"
+        android:name="ru.eugeneprojects.passwordmanager.views.fragments.PasswordListFragment"
+        android:label="PasswordListFragment" >
+        <action
+            android:id="@+id/action_passwordListFragment_to_passwordFragment"
+            app:destination="@id/passwordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/passwordFragment"
+        android:name="ru.eugeneprojects.passwordmanager.views.fragments.PasswordFragment"
+        android:label="PasswordFragment" />
+</navigation>
