@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">PasswordManager</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_password_fab">добавить пароль</string>
+    <string name="save_password_button_text">Сохранить пароль</string>
+    <string name="enter_password_hint">Введите пароль:</string>
+    <string name="enter_site_url_hint">Введите ссылку на сайт:</string>
+    <string name="enter_site_name_hint">Введите имя сайта:</string>
+    <string name="enter_url_helper">Введите url в формате \'www.example.ru\'</string>
 </resources>

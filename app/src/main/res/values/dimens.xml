@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="card_elevation">4dp</dimen>
+    <dimen name="card_margin">4dp</dimen>
+    <dimen name="card_corner_radius">10dp</dimen>
+    <dimen name="card_padding">10dp</dimen>
+    <dimen name="card_image_width">40dp</dimen>
+    <dimen name="card_image_height">40dp</dimen>
+    <dimen name="card_corner_size">5dp</dimen>
+
+    <dimen name="card_text_view_style_margin">10dp</dimen>
+
+    <dimen name="password_layout_margin">3dp</dimen>
+</resources>
