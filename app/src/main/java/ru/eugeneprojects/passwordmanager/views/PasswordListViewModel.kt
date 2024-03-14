@@ -6,11 +6,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepository
 import ru.eugeneprojects.passwordmanager.data.repository.paging.PasswordPagingSource
 import ru.eugeneprojects.passwordmanager.data.room.PasswordDao
 
 class PasswordListViewModel (
-    private val dao: PasswordDao
+    private val repository: PasswordRepository
 ) : ViewModel() {
 
     val data = Pager(
@@ -20,17 +21,17 @@ class PasswordListViewModel (
             initialLoadSize = 20
         ),
     ) {
-        PasswordPagingSource(dao)
+        PasswordPagingSource(repository)
     }.flow.cachedIn(viewModelScope)
 }
 
 class PasswordViewModelFactory(
-    private val dao: PasswordDao
+    private val repository: PasswordRepository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(PasswordListViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return PasswordListViewModel(dao) as T
+            return PasswordListViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -15,6 +15,8 @@ import kotlinx.coroutines.launch
 import ru.eugeneprojects.passwordmanager.R
 import ru.eugeneprojects.passwordmanager.adapters.PasswordLoadStateAdapter
 import ru.eugeneprojects.passwordmanager.adapters.PasswordPagingAdapter
+import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepository
+import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepositoryIMPL
 import ru.eugeneprojects.passwordmanager.data.room.PasswordDao
 import ru.eugeneprojects.passwordmanager.data.room.PasswordDatabase
 import ru.eugeneprojects.passwordmanager.databinding.FragmentPasswordListBinding
@@ -26,13 +28,15 @@ class PasswordListFragment : Fragment() {
     private var binding: FragmentPasswordListBinding? = null
 
     private lateinit var dao: PasswordDao
-    private val viewModel: PasswordListViewModel by viewModels { PasswordViewModelFactory(dao) }
+    private lateinit var repository: PasswordRepository
+    private val viewModel: PasswordListViewModel by viewModels { PasswordViewModelFactory(repository) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        dao = PasswordDatabase.getInstance(requireContext()).getPasswordDao()
+        dao = PasswordDatabase(requireContext()).getPasswordDao()
+        repository = PasswordRepositoryIMPL(dao)
         binding = FragmentPasswordListBinding.inflate(inflater)
         return binding!!.root
     }

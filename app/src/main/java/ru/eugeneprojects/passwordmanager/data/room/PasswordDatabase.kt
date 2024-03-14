@@ -18,5 +18,21 @@ abstract class PasswordDatabase : RoomDatabase() {
 
     abstract fun getPasswordDao(): PasswordDao
 
+    companion object {
+        @Volatile
+        private var instance: PasswordDatabase? = null
+        private val LOCK = Any()
+
+        operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
+            instance ?: createDatabase(context).also { instance = it}
+        }
+
+        private fun createDatabase(context: Context) =
+            Room.databaseBuilder(
+                context.applicationContext,
+                PasswordDatabase::class.java,
+                "password_db.db"
+            ).build()
+    }
 
 }

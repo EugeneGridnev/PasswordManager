@@ -4,16 +4,17 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import kotlinx.coroutines.delay
 import ru.eugeneprojects.passwordmanager.data.models.Password
+import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepository
 import ru.eugeneprojects.passwordmanager.data.room.PasswordDao
 
 class PasswordPagingSource (
-    private val dao: PasswordDao
+    private val repository: PasswordRepository
 ) : PagingSource<Int, Password>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Password> {
         val page = params.key ?: 0
 
         return try {
-            val entities = dao.getPasswords(params.loadSize, page * params.loadSize)
+            val entities = repository.getPasswords(params.loadSize, page * params.loadSize)
 
             if (page != 0) delay(1000)
 
