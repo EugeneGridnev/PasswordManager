@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.eugeneprojects.passwordmanager.R
@@ -20,6 +22,7 @@ import ru.eugeneprojects.passwordmanager.databinding.FragmentPasswordBinding
 class PasswordFragment : Fragment() {
 
     private var binding: FragmentPasswordBinding? = null
+    private val args: PasswordFragmentArgs by navArgs()
     private lateinit var dao: PasswordDao
     private lateinit var repository: PasswordRepository
 
@@ -37,7 +40,8 @@ class PasswordFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setOnSaveButtonClick()
+
+        setUpPasswordUI()
     }
 
     override fun onDestroyView() {
@@ -45,18 +49,46 @@ class PasswordFragment : Fragment() {
         super.onDestroyView()
     }
 
-    private fun setOnSaveButtonClick() {
-        binding?.savePasswordButton?.setOnClickListener { savePassword() }
+    private fun setUpPasswordUI() {
+        if (args.password != null) {
+            setUpPasswordDataToChange()
+            binding?.savePasswordButton?.setOnClickListener {
+                updatePassword()
+            }
+        } else {
+            binding?.savePasswordButton?.setOnClickListener {
+                addPassword()
+            }
+        }
     }
 
-    private fun savePassword() {
+    private fun addPassword() {
         lifecycleScope.launch {
             repository.insert(Password(
                 0,
                 binding?.editTextSiteName?.text.toString(),
                 binding?.editTextSiteUrl?.text.toString(),
-                binding?.editTextSitePassword?.text.toString(),
+                binding?.editTextSitePassword?.text.toString()
             ))
+            findNavController().popBackStack()
         }
+    }
+
+    private fun updatePassword() {
+        lifecycleScope.launch {
+            repository.update(Password(
+                args.password!!.passwordId,
+                binding?.editTextSiteName?.text.toString(),
+                binding?.editTextSiteUrl?.text.toString(),
+                binding?.editTextSitePassword?.text.toString()
+            ))
+            findNavController().popBackStack()
+        }
+    }
+
+    private fun setUpPasswordDataToChange() {
+        binding?.editTextSiteName?.setText(args.password?.passwordSiteName)
+        binding?.editTextSiteUrl?.setText(args.password?.passwordSiteUrl)
+        binding?.editTextSitePassword?.setText(args.password?.password)
     }
 }

@@ -8,7 +8,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepository
 import ru.eugeneprojects.passwordmanager.data.repository.paging.PasswordPagingSource
-import ru.eugeneprojects.passwordmanager.data.room.PasswordDao
 
 class PasswordListViewModel (
     private val repository: PasswordRepository
@@ -17,8 +16,9 @@ class PasswordListViewModel (
     val data = Pager(
         PagingConfig(
             pageSize = 20,
+            initialLoadSize = 20,
+            prefetchDistance = 20 / 2,
             enablePlaceholders = false,
-            initialLoadSize = 20
         ),
     ) {
         PasswordPagingSource(repository)

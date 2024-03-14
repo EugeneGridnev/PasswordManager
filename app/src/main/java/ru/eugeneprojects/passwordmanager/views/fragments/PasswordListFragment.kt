@@ -51,6 +51,8 @@ class PasswordListFragment : Fragment() {
             PasswordLoadStateAdapter()
         )
 
+        setOnListItemClick(adapter)
+
         lifecycleScope.launch {
             viewModel.data.collectLatest {
                 adapter.submitData(it)
@@ -64,6 +66,22 @@ class PasswordListFragment : Fragment() {
     }
 
     private fun setAddNewPasswordFAB() {
+
+        binding?.fabAddPassword?.setOnClickListener {
+            findNavController().navigate(R.id.action_passwordListFragment_to_passwordFragment)
+        }
+    }
+
+    private fun setOnListItemClick(adapter: PasswordPagingAdapter) {
+        adapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putParcelable("password", it)
+            }
+            findNavController().navigate(
+                R.id.action_passwordListFragment_to_passwordFragment,
+                bundle
+            )
+        }
 
         binding?.fabAddPassword?.setOnClickListener {
             findNavController().navigate(R.id.action_passwordListFragment_to_passwordFragment)

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
+import androidx.room.Update
 import ru.eugeneprojects.passwordmanager.data.models.Password
 
 @Dao
@@ -12,6 +13,9 @@ interface PasswordDao {
     suspend fun insert(password: Password): Long
 
     //suspend fun delete(passwordId: Int)
+
+    @Update
+    suspend fun update(password: Password): Int
 
     @Query("SELECT * FROM table_password ORDER BY passwordId ASC LIMIT :limit OFFSET :offset")
     suspend fun getPasswords(limit: Int, offset: Int): List<Password>

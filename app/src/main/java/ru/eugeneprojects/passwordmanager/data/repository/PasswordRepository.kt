@@ -8,5 +8,7 @@ interface PasswordRepository {
 
     suspend fun delete(password: Password)
 
+    suspend fun update(password: Password)
+
     suspend fun getPasswords(limit: Int, offset: Int): List<Password>
 }

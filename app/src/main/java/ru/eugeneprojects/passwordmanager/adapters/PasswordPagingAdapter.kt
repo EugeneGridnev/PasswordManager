@@ -12,16 +12,21 @@ import ru.eugeneprojects.passwordmanager.databinding.PasswordListItemBinding
 
 class PasswordPagingAdapter : PagingDataAdapter<Password, PasswordPagingAdapter.PasswordViewHolder>(PasswordDiffCallBack()) {
 
+    private var onItemClickListener: ((Password) -> Unit)? = null
+
     inner class PasswordViewHolder(val binding: PasswordListItemBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(password: Password) {
+        fun bind(password: Password, onClickListener: ((Password) -> Unit)? = null) {
 
             Glide.with(itemView)
                 .load("yandex.ru/favicon.ico")
                 .placeholder(R.drawable.ic_image_placeholder)
                 .into(binding.imageViewPasswordImage)
             binding.textViewProductTitle.text = password.passwordSiteName
+            itemView.setOnClickListener {
+                onClickListener?.invoke(password)
+            }
         }
     }
 
@@ -36,7 +41,7 @@ class PasswordPagingAdapter : PagingDataAdapter<Password, PasswordPagingAdapter.
 
     override fun onBindViewHolder(holder: PasswordViewHolder, position: Int) {
         val password = getItem(position) ?: return
-        holder.bind(password)
+        holder.bind(password, onItemClickListener)
     }
 
     class PasswordDiffCallBack : DiffUtil.ItemCallback<Password>() {
@@ -47,5 +52,9 @@ class PasswordPagingAdapter : PagingDataAdapter<Password, PasswordPagingAdapter.
         override fun areContentsTheSame(oldItem: Password, newItem: Password): Boolean {
             return oldItem == newItem
         }
+    }
+
+    fun setOnItemClickListener(listener: (Password) -> Unit) {
+        onItemClickListener = listener
     }
 }

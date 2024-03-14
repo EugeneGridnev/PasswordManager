@@ -12,6 +12,10 @@ class PasswordRepositoryIMPL(private val dao: PasswordDao) : PasswordRepository 
 
     }
 
+    override suspend fun update(password: Password) {
+        dao.update(password)
+    }
+
     override suspend fun getPasswords(limit: Int, offset: Int): List<Password> {
         return dao.getPasswords(limit, offset)
     }
