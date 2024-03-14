@@ -11,4 +11,7 @@
     <dimen name="card_text_view_style_margin">10dp</dimen>
 
     <dimen name="password_layout_margin">3dp</dimen>
+
+    <dimen name="progress_padding">4dp</dimen>
+    <dimen name="progress_height">56dp</dimen>
 </resources>

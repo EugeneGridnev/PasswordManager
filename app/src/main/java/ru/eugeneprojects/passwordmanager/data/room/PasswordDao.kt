@@ -11,8 +11,8 @@ interface PasswordDao {
     @Insert(onConflict = REPLACE)
     suspend fun insert(password: Password): Long
 
-    suspend fun delete(passwordId: Int)
+    //suspend fun delete(passwordId: Int)
 
-    @Query("SELECT * FROM table_password")
-    suspend fun getPasswords(): List<Password>
+    @Query("SELECT * FROM table_password ORDER BY passwordId ASC LIMIT :limit OFFSET :offset")
+    suspend fun getPasswords(limit: Int, offset: Int): List<Password>
 }
