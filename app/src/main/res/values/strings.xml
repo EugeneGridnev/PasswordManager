@@ -7,4 +7,5 @@
     <string name="enter_site_url_hint">Введите ссылку на сайт:</string>
     <string name="enter_site_name_hint">Введите имя сайта:</string>
     <string name="enter_url_helper">Введите url в формате \'www.example.ru\'</string>
+    <string name="password_list_title">Список ваших паролей</string>
 </resources>
