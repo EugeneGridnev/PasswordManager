@@ -1,14 +1,15 @@
 package ru.eugeneprojects.passwordmanager.views.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.eugeneprojects.passwordmanager.R
@@ -16,34 +17,26 @@ import ru.eugeneprojects.passwordmanager.adapters.PasswordLoadStateAdapter
 import ru.eugeneprojects.passwordmanager.adapters.PasswordPagingAdapter
 import ru.eugeneprojects.passwordmanager.data.SharedPreferenceManager
 import ru.eugeneprojects.passwordmanager.data.models.Password
-import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepository
-import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepositoryIMPL
-import ru.eugeneprojects.passwordmanager.data.room.PasswordDao
-import ru.eugeneprojects.passwordmanager.data.room.PasswordDatabase
 import ru.eugeneprojects.passwordmanager.databinding.FragmentPasswordListBinding
 import ru.eugeneprojects.passwordmanager.views.PasswordListViewModel
-import ru.eugeneprojects.passwordmanager.views.PasswordViewModelFactory
 import ru.eugeneprojects.passwordmanager.views.dialogs.ChangeMasterPasswordDialogFragment
 import ru.eugeneprojects.passwordmanager.views.dialogs.FirstTimeDialogFragment
 import ru.eugeneprojects.passwordmanager.views.dialogs.MasterPasswordDialogFragment
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PasswordListFragment : Fragment() {
 
     private var binding: FragmentPasswordListBinding? = null
 
-    private lateinit var dao: PasswordDao
-    private lateinit var repository: PasswordRepository
-    private lateinit var sharedPreferenceManager: SharedPreferenceManager
+    private lateinit var viewModel: PasswordListViewModel
 
-    private val viewModel: PasswordListViewModel by viewModels { PasswordViewModelFactory(repository) }
+    @Inject lateinit var sharedPreferenceManager: SharedPreferenceManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        dao = PasswordDatabase(requireContext()).getPasswordDao()
-        repository = PasswordRepositoryIMPL(dao)
-        sharedPreferenceManager = SharedPreferenceManager(requireContext())
 
         binding = FragmentPasswordListBinding.inflate(inflater)
         return binding!!.root
@@ -51,6 +44,8 @@ class PasswordListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel = ViewModelProvider(this)[PasswordListViewModel::class.java]
 
         showFirstTimeAccessDialog()
 

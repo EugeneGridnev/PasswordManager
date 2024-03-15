@@ -4,6 +4,8 @@ plugins {
     id("com.google.devtools.ksp")
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-parcelize")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -62,5 +64,8 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
 
     implementation ("androidx.paging:paging-runtime-ktx:3.2.1")
+
+    implementation ("com.google.dagger:hilt-android:2.51")
+    kapt("com.google.dagger:hilt-android-compiler:2.51")
 
 }

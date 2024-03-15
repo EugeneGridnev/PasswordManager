@@ -1,38 +1,32 @@
 package ru.eugeneprojects.passwordmanager.views.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import kotlinx.coroutines.flow.collectLatest
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import ru.eugeneprojects.passwordmanager.R
 import ru.eugeneprojects.passwordmanager.data.models.Password
 import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepository
-import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepositoryIMPL
-import ru.eugeneprojects.passwordmanager.data.room.PasswordDao
-import ru.eugeneprojects.passwordmanager.data.room.PasswordDatabase
 import ru.eugeneprojects.passwordmanager.databinding.FragmentPasswordBinding
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class PasswordFragment : Fragment() {
 
     private var binding: FragmentPasswordBinding? = null
     private val args: PasswordFragmentArgs by navArgs()
-    private lateinit var dao: PasswordDao
-    private lateinit var repository: PasswordRepository
+    @Inject lateinit var repository: PasswordRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
-        dao = PasswordDatabase(requireContext().applicationContext).getPasswordDao()
-        repository = PasswordRepositoryIMPL(dao)
         binding = FragmentPasswordBinding.inflate(inflater)
         return binding!!.root
     }

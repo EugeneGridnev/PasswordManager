@@ -2,8 +2,10 @@ package ru.eugeneprojects.passwordmanager.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class SharedPreferenceManager(context: Context) {
+class SharedPreferenceManager @Inject constructor(@ApplicationContext context: Context) {
 
     private val preferences: SharedPreferences by lazy {
         context.getSharedPreferences(MASTER_PASSWORD_PREF, Context.MODE_PRIVATE)

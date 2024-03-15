@@ -2,8 +2,9 @@ package ru.eugeneprojects.passwordmanager.data.repository
 
 import ru.eugeneprojects.passwordmanager.data.models.Password
 import ru.eugeneprojects.passwordmanager.data.room.PasswordDao
+import javax.inject.Inject
 
-class PasswordRepositoryIMPL(private val dao: PasswordDao) : PasswordRepository {
+class PasswordRepositoryIMPL @Inject constructor(private val dao: PasswordDao) : PasswordRepository {
     override suspend fun insert(password: Password) {
         dao.insert(password)
     }
