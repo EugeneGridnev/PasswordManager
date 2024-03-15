@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.paging.LoadStateAdapter
-import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.eugeneprojects.passwordmanager.R
@@ -22,6 +20,8 @@ import ru.eugeneprojects.passwordmanager.data.room.PasswordDatabase
 import ru.eugeneprojects.passwordmanager.databinding.FragmentPasswordListBinding
 import ru.eugeneprojects.passwordmanager.views.PasswordListViewModel
 import ru.eugeneprojects.passwordmanager.views.PasswordViewModelFactory
+import ru.eugeneprojects.passwordmanager.views.dialogs.ChangeMasterPasswordDialogFragment
+import ru.eugeneprojects.passwordmanager.views.dialogs.FirstTimeDialogFragment
 import ru.eugeneprojects.passwordmanager.views.dialogs.MasterPasswordDialogFragment
 
 class PasswordListFragment : Fragment() {
@@ -44,6 +44,8 @@ class PasswordListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        showFirstTimeAccessDialog()
 
         setAddNewPasswordFAB()
 
@@ -94,16 +96,20 @@ class PasswordListFragment : Fragment() {
 
     private fun setSettingsOnClickListener() {
         binding?.masterPassSettingIcon?.setOnClickListener {
-            showSetMasterPasswordDialog()
+            showChangeMasterPasswordDialog()
         }
     }
 
-    private fun showSetMasterPasswordDialog() {
-        MasterPasswordDialogFragment.show(parentFragmentManager)
+    private fun showChangeMasterPasswordDialog() {
+        ChangeMasterPasswordDialogFragment.show(parentFragmentManager)
     }
 
     private fun showItemAccessDialog() {
         MasterPasswordDialogFragment.show(parentFragmentManager)
+    }
+
+    private fun showFirstTimeAccessDialog() {
+        FirstTimeDialogFragment.show(parentFragmentManager)
     }
 
 
