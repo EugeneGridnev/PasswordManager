@@ -15,6 +15,7 @@ import ru.eugeneprojects.passwordmanager.R
 import ru.eugeneprojects.passwordmanager.adapters.PasswordLoadStateAdapter
 import ru.eugeneprojects.passwordmanager.adapters.PasswordPagingAdapter
 import ru.eugeneprojects.passwordmanager.data.SharedPreferenceManager
+import ru.eugeneprojects.passwordmanager.data.models.Password
 import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepository
 import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepositoryIMPL
 import ru.eugeneprojects.passwordmanager.data.room.PasswordDao
@@ -85,18 +86,7 @@ class PasswordListFragment : Fragment() {
 
     private fun setOnListItemClick(adapter: PasswordPagingAdapter) {
         adapter.setOnItemClickListener {
-            showItemAccessDialog()
-//            val bundle = Bundle().apply {
-//                putParcelable("password", it)
-//            }
-//            findNavController().navigate(
-//                R.id.action_passwordListFragment_to_passwordFragment,
-//                bundle
-//            )
-        }
-
-        binding?.fabAddPassword?.setOnClickListener {
-            findNavController().navigate(R.id.action_passwordListFragment_to_passwordFragment)
+            showItemAccessDialog(it)
         }
     }
 
@@ -110,8 +100,19 @@ class PasswordListFragment : Fragment() {
         ChangeMasterPasswordDialogFragment.show(parentFragmentManager)
     }
 
-    private fun showItemAccessDialog() {
-        MasterPasswordDialogFragment.show(parentFragmentManager)
+    private fun showItemAccessDialog(item: Password) {
+        MasterPasswordDialogFragment.show(parentFragmentManager, sharedPreferenceManager.getMasterPasswordExistInPref().toString())
+        MasterPasswordDialogFragment.setUpListener(parentFragmentManager, this) {
+            if (it) {
+                    val bundle = Bundle().apply {
+                        putParcelable("password", item)
+                }
+                findNavController().navigate(
+                    R.id.action_passwordListFragment_to_passwordFragment,
+                    bundle
+                )
+            }
+        }
     }
 
     private fun showFirstTimeAccessDialog() {

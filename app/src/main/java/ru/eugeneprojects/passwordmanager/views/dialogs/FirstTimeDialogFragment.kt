@@ -33,8 +33,9 @@ class FirstTimeDialogFragment : DialogFragment() {
                     dialogInputBinding.editTextMasterPassword.error = getString(R.string.master_password_empty_error)
                     return@setOnClickListener
                 }
-                parentFragmentManager.setFragmentResult(REQUEST_KEY, bundleOf(
-                    MASTER_PASSWORD_RESPONSE to enteredText))
+                parentFragmentManager.setFragmentResult(REQUEST_KEY_FT, bundleOf(
+                    MASTER_PASSWORD_RESPONSE to enteredText)
+                )
                 dismiss()
             }
         }
@@ -46,7 +47,7 @@ class FirstTimeDialogFragment : DialogFragment() {
         @JvmStatic private val TAG = FirstTimeDialogFragment::class.java.simpleName
         @JvmStatic private val MASTER_PASSWORD_RESPONSE = "MASTER_PASSWORD_RESPONSE"
 
-        @JvmStatic val REQUEST_KEY = "$TAG:defaultRequestKey"
+        @JvmStatic val REQUEST_KEY_FT = "$TAG:defaultRequestKey"
 
         fun show(manager: FragmentManager) {
             val dialogFragment = FirstTimeDialogFragment()
@@ -54,7 +55,7 @@ class FirstTimeDialogFragment : DialogFragment() {
         }
 
         fun setUpListener(manager: FragmentManager, lifecycleOwner: LifecycleOwner, listener: (String) -> Unit) {
-            manager.setFragmentResultListener(REQUEST_KEY, lifecycleOwner, FragmentResultListener { _, result ->
+            manager.setFragmentResultListener(REQUEST_KEY_FT, lifecycleOwner, FragmentResultListener { _, result ->
                 listener.invoke(result.getString(MASTER_PASSWORD_RESPONSE)!!)
             })
         }

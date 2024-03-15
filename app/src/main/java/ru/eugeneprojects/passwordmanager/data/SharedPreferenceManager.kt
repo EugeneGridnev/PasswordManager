@@ -13,6 +13,10 @@ class SharedPreferenceManager(context: Context) {
         return preferences.contains(MASTER_PASSWORD_VALUE)
     }
 
+    fun getMasterPasswordExistInPref(): String? {
+        return preferences.getString(MASTER_PASSWORD_VALUE, "")
+    }
+
     fun saveMasterPasswordInPref(masterPassword: String) {
         preferences.edit().putString(MASTER_PASSWORD_VALUE, masterPassword).apply()
     }
