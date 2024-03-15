@@ -77,13 +77,14 @@ class PasswordListFragment : Fragment() {
 
     private fun setOnListItemClick(adapter: PasswordPagingAdapter) {
         adapter.setOnItemClickListener {
-            val bundle = Bundle().apply {
-                putParcelable("password", it)
-            }
-            findNavController().navigate(
-                R.id.action_passwordListFragment_to_passwordFragment,
-                bundle
-            )
+            showItemAccessDialog()
+//            val bundle = Bundle().apply {
+//                putParcelable("password", it)
+//            }
+//            findNavController().navigate(
+//                R.id.action_passwordListFragment_to_passwordFragment,
+//                bundle
+//            )
         }
 
         binding?.fabAddPassword?.setOnClickListener {
@@ -101,6 +102,9 @@ class PasswordListFragment : Fragment() {
         MasterPasswordDialogFragment.show(parentFragmentManager)
     }
 
+    private fun showItemAccessDialog() {
+        MasterPasswordDialogFragment.show(parentFragmentManager)
+    }
 
 
 }
