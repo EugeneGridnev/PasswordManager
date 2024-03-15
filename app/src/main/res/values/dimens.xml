@@ -16,4 +16,7 @@
     <dimen name="progress_height">56dp</dimen>
     
     <dimen name="master_password_settings_icon_size">36dp</dimen>
+
+    <dimen name="master_password_edit_layout_padding">8dp</dimen>
+
 </resources>

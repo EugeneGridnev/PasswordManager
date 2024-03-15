@@ -22,6 +22,7 @@ import ru.eugeneprojects.passwordmanager.data.room.PasswordDatabase
 import ru.eugeneprojects.passwordmanager.databinding.FragmentPasswordListBinding
 import ru.eugeneprojects.passwordmanager.views.PasswordListViewModel
 import ru.eugeneprojects.passwordmanager.views.PasswordViewModelFactory
+import ru.eugeneprojects.passwordmanager.views.dialogs.MasterPasswordDialogFragment
 
 class PasswordListFragment : Fragment() {
 
@@ -45,6 +46,8 @@ class PasswordListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setAddNewPasswordFAB()
+
+        setSettingsOnClickListener()
 
         val adapter = PasswordPagingAdapter()
         binding?.recyclerViewPasswordsList?.adapter = adapter.withLoadStateFooter(
@@ -87,5 +90,17 @@ class PasswordListFragment : Fragment() {
             findNavController().navigate(R.id.action_passwordListFragment_to_passwordFragment)
         }
     }
+
+    private fun setSettingsOnClickListener() {
+        binding?.masterPassSettingIcon?.setOnClickListener {
+            showSetMasterPasswordDialog()
+        }
+    }
+
+    private fun showSetMasterPasswordDialog() {
+        MasterPasswordDialogFragment.show(parentFragmentManager)
+    }
+
+
 
 }
