@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 import ru.eugeneprojects.passwordmanager.R
 import ru.eugeneprojects.passwordmanager.adapters.PasswordLoadStateAdapter
 import ru.eugeneprojects.passwordmanager.adapters.PasswordPagingAdapter
+import ru.eugeneprojects.passwordmanager.data.SharedPreferenceManager
 import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepository
 import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepositoryIMPL
 import ru.eugeneprojects.passwordmanager.data.room.PasswordDao
@@ -30,6 +32,8 @@ class PasswordListFragment : Fragment() {
 
     private lateinit var dao: PasswordDao
     private lateinit var repository: PasswordRepository
+    private lateinit var sharedPreferenceManager: SharedPreferenceManager
+
     private val viewModel: PasswordListViewModel by viewModels { PasswordViewModelFactory(repository) }
 
     override fun onCreateView(
@@ -38,6 +42,8 @@ class PasswordListFragment : Fragment() {
     ): View {
         dao = PasswordDatabase(requireContext()).getPasswordDao()
         repository = PasswordRepositoryIMPL(dao)
+        sharedPreferenceManager = SharedPreferenceManager(requireContext())
+
         binding = FragmentPasswordListBinding.inflate(inflater)
         return binding!!.root
     }
@@ -109,8 +115,17 @@ class PasswordListFragment : Fragment() {
     }
 
     private fun showFirstTimeAccessDialog() {
-        FirstTimeDialogFragment.show(parentFragmentManager)
+
+        if (!sharedPreferenceManager.isMasterPasswordExistInPref()) {
+            FirstTimeDialogFragment.show(parentFragmentManager)
+            setUpFirstTimeDialogFragmentListener()
+        }
     }
 
-
+    private fun setUpFirstTimeDialogFragmentListener() {
+        FirstTimeDialogFragment.setUpListener(parentFragmentManager, this) {
+            sharedPreferenceManager.saveMasterPasswordInPref(it)
+            Toast.makeText(context, R.string.master_password_created_toast, Toast.LENGTH_SHORT).show()
+        }
+    }
 }
