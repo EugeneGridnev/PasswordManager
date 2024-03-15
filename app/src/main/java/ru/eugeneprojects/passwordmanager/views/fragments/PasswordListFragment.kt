@@ -97,15 +97,21 @@ class PasswordListFragment : Fragment() {
     }
 
     private fun showChangeMasterPasswordDialog() {
-        ChangeMasterPasswordDialogFragment.show(parentFragmentManager)
+        ChangeMasterPasswordDialogFragment.show(parentFragmentManager,
+            sharedPreferenceManager.getMasterPasswordExistInPref()!!
+        )
+        ChangeMasterPasswordDialogFragment.setUpListener(parentFragmentManager, this){
+            sharedPreferenceManager.saveMasterPasswordInPref(it)
+            Toast.makeText(context, R.string.master_password_changed_toast, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showItemAccessDialog(item: Password) {
         MasterPasswordDialogFragment.show(parentFragmentManager, sharedPreferenceManager.getMasterPasswordExistInPref().toString())
         MasterPasswordDialogFragment.setUpListener(parentFragmentManager, this) {
             if (it) {
-                    val bundle = Bundle().apply {
-                        putParcelable("password", item)
+                val bundle = Bundle().apply {
+                    putParcelable("password", item)
                 }
                 findNavController().navigate(
                     R.id.action_passwordListFragment_to_passwordFragment,
