@@ -29,6 +29,9 @@ class PasswordListFragment : Fragment() {
 
     private var binding: FragmentPasswordListBinding? = null
 
+
+    private var refresh = false
+    private lateinit var adapter: PasswordPagingAdapter
     private lateinit var viewModel: PasswordListViewModel
 
     @Inject lateinit var sharedPreferenceManager: SharedPreferenceManager
@@ -53,7 +56,7 @@ class PasswordListFragment : Fragment() {
 
         setSettingsOnClickListener()
 
-        val adapter = PasswordPagingAdapter()
+        adapter = PasswordPagingAdapter()
         binding?.recyclerViewPasswordsList?.adapter = adapter.withLoadStateFooter(
             PasswordLoadStateAdapter()
         )
@@ -67,6 +70,14 @@ class PasswordListFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(refresh) {
+            adapter.refresh()
+            refresh = false
+        }
+    }
+
     override fun onDestroyView() {
         binding = null
         super.onDestroyView()
@@ -75,6 +86,7 @@ class PasswordListFragment : Fragment() {
     private fun setAddNewPasswordFAB() {
 
         binding?.fabAddPassword?.setOnClickListener {
+            refresh = true
             findNavController().navigate(R.id.action_passwordListFragment_to_passwordFragment)
         }
     }
@@ -108,6 +120,7 @@ class PasswordListFragment : Fragment() {
                 val bundle = Bundle().apply {
                     putParcelable("password", item)
                 }
+                refresh = true
                 findNavController().navigate(
                     R.id.action_passwordListFragment_to_passwordFragment,
                     bundle
