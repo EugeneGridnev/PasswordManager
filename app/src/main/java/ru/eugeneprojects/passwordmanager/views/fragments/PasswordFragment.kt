@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import ru.eugeneprojects.passwordmanager.data.models.Password
 import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepository
 import ru.eugeneprojects.passwordmanager.databinding.FragmentPasswordBinding
+import ru.eugeneprojects.passwordmanager.encryption.CryptoManager
 import ru.eugeneprojects.passwordmanager.views.PasswordListViewModel
 import javax.inject.Inject
 
@@ -62,12 +63,12 @@ class PasswordFragment : Fragment() {
     private fun addPassword() {
         lifecycleScope.launch {
 
-            viewModel.addPassword(Password(
+            viewModel.addPassword(
                 0,
                 binding?.editTextSiteName?.text.toString(),
                 binding?.editTextSiteUrl?.text.toString(),
                 binding?.editTextSitePassword?.text.toString()
-            ))
+            )
             findNavController().popBackStack()
         }
     }

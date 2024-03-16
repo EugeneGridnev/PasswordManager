@@ -12,12 +12,15 @@ import kotlinx.coroutines.launch
 import ru.eugeneprojects.passwordmanager.data.models.Password
 import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepository
 import ru.eugeneprojects.passwordmanager.data.repository.paging.PasswordPagingSource
+import ru.eugeneprojects.passwordmanager.encryption.CryptoManager
 import javax.inject.Inject
 
 @HiltViewModel
 class PasswordListViewModel @Inject constructor (
     private val repository: PasswordRepository
 ) : ViewModel() {
+
+    private val cryptoManager = CryptoManager()
 
     val data = Pager(
         PagingConfig(
@@ -32,6 +35,14 @@ class PasswordListViewModel @Inject constructor (
 
     suspend fun updatePassword(password: Password) = repository.update(password)
 
-    suspend fun addPassword(password: Password) = repository.insert(password)
+    suspend fun addPassword(passwordId: Int, passwordName: String, passwordUrl: String, passwordValue: String) {
+
+        repository.insert(Password(
+            passwordId,
+            passwordName,
+            passwordUrl,
+            cryptoManager.encrypt(passwordValue.toByteArray()).toString()
+        ))
+    }
 
 }
