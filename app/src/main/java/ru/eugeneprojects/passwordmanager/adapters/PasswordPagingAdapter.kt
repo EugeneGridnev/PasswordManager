@@ -20,7 +20,9 @@ class PasswordPagingAdapter : PagingDataAdapter<Password, PasswordPagingAdapter.
         fun bind(password: Password, onClickListener: ((Password) -> Unit)? = null) {
 
             Glide.with(itemView)
-                .load("yandex.ru/favicon.ico")
+                .load(itemView.context.getText(R.string.icon_prefix).toString()
+                        + password.passwordSiteUrl
+                        + itemView.context.getText(R.string.icon_postfix).toString())
                 .placeholder(R.drawable.ic_image_placeholder)
                 .into(binding.imageViewPasswordImage)
             binding.textViewProductTitle.text = password.passwordSiteName

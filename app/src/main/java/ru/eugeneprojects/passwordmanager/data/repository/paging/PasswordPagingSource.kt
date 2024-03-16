@@ -15,8 +15,6 @@ class PasswordPagingSource (
         return try {
             val entities = repository.getPasswords(params.loadSize, page * params.loadSize)
 
-            if (page != 0) delay(1000)
-
             LoadResult.Page(
                 data = entities,
                 prevKey = if (page == 0) null else page - 1,
