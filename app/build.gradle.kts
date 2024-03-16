@@ -68,4 +68,6 @@ dependencies {
     implementation ("com.google.dagger:hilt-android:2.51")
     kapt("com.google.dagger:hilt-android-compiler:2.51")
 
+    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
+
 }

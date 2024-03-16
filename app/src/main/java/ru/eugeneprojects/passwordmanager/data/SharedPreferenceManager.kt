@@ -2,13 +2,25 @@ package ru.eugeneprojects.passwordmanager.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
+
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class SharedPreferenceManager @Inject constructor(@ApplicationContext context: Context) {
 
+    private val masterKey = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+        .build()
+
     private val preferences: SharedPreferences by lazy {
-        context.getSharedPreferences(MASTER_PASSWORD_PREF, Context.MODE_PRIVATE)
+        EncryptedSharedPreferences.create(
+            context,
+            MASTER_PASSWORD_PREF,
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM)
     }
 
     fun isMasterPasswordExistInPref(): Boolean {
