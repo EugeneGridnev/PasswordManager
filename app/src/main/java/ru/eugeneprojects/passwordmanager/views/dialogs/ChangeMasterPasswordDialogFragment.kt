@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.core.os.bundleOf
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentResultListener
@@ -31,11 +32,17 @@ class ChangeMasterPasswordDialogFragment : DialogFragment() {
 
         dialogInputBinding.editTextMasterPassword.setText(masterPassword)
 
+        dialogInputBinding.editTextMasterPassword.addTextChangedListener { text ->
+            if (text?.isBlank() == false) {
+                dialogInputBinding.textInputMasterPassword.helperText = ""
+            }
+        }
+
         dialog.setOnShowListener {
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
                 val enteredText = dialogInputBinding.editTextMasterPassword.text.toString()
                 if (enteredText.isBlank()) {
-                    dialogInputBinding.editTextMasterPassword.error = getString(R.string.master_password_empty_error)
+                    dialogInputBinding.textInputMasterPassword.helperText = getString(R.string.master_password_empty_error)
                     return@setOnClickListener
                 }
 
