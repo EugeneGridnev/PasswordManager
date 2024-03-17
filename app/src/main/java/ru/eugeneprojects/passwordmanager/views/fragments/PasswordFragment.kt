@@ -13,18 +13,15 @@ import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.eugeneprojects.passwordmanager.R
-import ru.eugeneprojects.passwordmanager.data.models.Password
-import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepository
 import ru.eugeneprojects.passwordmanager.databinding.FragmentPasswordBinding
-import ru.eugeneprojects.passwordmanager.views.PasswordListViewModel
-import javax.inject.Inject
+import ru.eugeneprojects.passwordmanager.views.PasswordSharedViewModel
 
 @AndroidEntryPoint
 class PasswordFragment : Fragment() {
 
     private var binding: FragmentPasswordBinding? = null
     private val args: PasswordFragmentArgs by navArgs()
-    private lateinit var viewModel: PasswordListViewModel
+    private lateinit var viewModel: PasswordSharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,7 +39,8 @@ class PasswordFragment : Fragment() {
                 setUpPasswordDataToChange()
             } else {
                 binding?.savePasswordButton?.isEnabled = false
-                binding?.textInputSiteName?.error = requireContext().getText(R.string.master_password_empty_error)
+                binding?.textInputSiteName?.error =
+                    requireContext().getText(R.string.master_password_empty_error)
             }
         }
     }
@@ -50,7 +48,7 @@ class PasswordFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[PasswordListViewModel::class.java]
+        viewModel = ViewModelProvider(this)[PasswordSharedViewModel::class.java]
 
         setCheckSiteNameListener()
 
@@ -63,6 +61,7 @@ class PasswordFragment : Fragment() {
     }
 
     private fun setUpPasswordUI() {
+
         if (args.password != null) {
             binding?.savePasswordButton?.setOnClickListener {
                 updatePassword()
@@ -75,6 +74,7 @@ class PasswordFragment : Fragment() {
     }
 
     private fun addPassword() {
+
         lifecycleScope.launch {
 
             viewModel.addPassword(
@@ -88,6 +88,7 @@ class PasswordFragment : Fragment() {
     }
 
     private fun updatePassword() {
+
         lifecycleScope.launch {
 
             viewModel.updatePassword(
@@ -101,6 +102,7 @@ class PasswordFragment : Fragment() {
     }
 
     private fun setUpPasswordDataToChange() {
+
         binding?.editTextSiteName?.setText(args.password?.passwordSiteName)
         binding?.editTextSiteUrl?.setText(args.password?.passwordSiteUrl)
         binding?.editTextSitePassword?.setText(viewModel.decrypt(args.password?.password!!))
@@ -108,14 +110,14 @@ class PasswordFragment : Fragment() {
 
     private fun setCheckSiteNameListener() {
 
-
         binding?.editTextSiteName?.addTextChangedListener { text ->
             if (text?.isBlank() == false) {
                 binding?.savePasswordButton?.isEnabled = true
                 binding?.textInputSiteName?.error = null
             } else {
                 binding?.savePasswordButton?.isEnabled = false
-                binding?.textInputSiteName?.error = requireContext().getText(R.string.master_password_empty_error)
+                binding?.textInputSiteName?.error =
+                    requireContext().getText(R.string.master_password_empty_error)
             }
         }
     }

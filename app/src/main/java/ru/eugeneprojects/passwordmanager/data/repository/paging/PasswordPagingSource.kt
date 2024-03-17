@@ -2,7 +2,6 @@ package ru.eugeneprojects.passwordmanager.data.repository.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import kotlinx.coroutines.delay
 import ru.eugeneprojects.passwordmanager.data.models.Password
 import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepository
 

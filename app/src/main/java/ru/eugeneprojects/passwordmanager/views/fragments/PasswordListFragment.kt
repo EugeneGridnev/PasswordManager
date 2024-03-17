@@ -13,19 +13,16 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import ru.eugeneprojects.passwordmanager.R
 import ru.eugeneprojects.passwordmanager.adapters.PasswordLoadStateAdapter
 import ru.eugeneprojects.passwordmanager.adapters.PasswordPagingAdapter
-import ru.eugeneprojects.passwordmanager.data.SharedPreferenceManager
 import ru.eugeneprojects.passwordmanager.data.models.Password
 import ru.eugeneprojects.passwordmanager.databinding.FragmentPasswordListBinding
-import ru.eugeneprojects.passwordmanager.views.PasswordListViewModel
+import ru.eugeneprojects.passwordmanager.views.PasswordSharedViewModel
 import ru.eugeneprojects.passwordmanager.views.dialogs.ChangeMasterPasswordDialogFragment
 import ru.eugeneprojects.passwordmanager.views.dialogs.FirstTimeDialogFragment
 import ru.eugeneprojects.passwordmanager.views.dialogs.MasterPasswordDialogFragment
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class PasswordListFragment : Fragment() {
@@ -33,7 +30,7 @@ class PasswordListFragment : Fragment() {
     private var binding: FragmentPasswordListBinding? = null
 
     private lateinit var adapter: PasswordPagingAdapter
-    private lateinit var viewModel: PasswordListViewModel
+    private lateinit var viewModel: PasswordSharedViewModel
 
 
 
@@ -49,7 +46,7 @@ class PasswordListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[PasswordListViewModel::class.java]
+        viewModel = ViewModelProvider(this)[PasswordSharedViewModel::class.java]
 
         showFirstTimeAccessDialog()
 

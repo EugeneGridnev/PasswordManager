@@ -13,7 +13,7 @@
     <string name="enter_master_password_title">Для доступа к объекту введите мастер пароль в строку ниже</string>
     <string name="first_time_dialog_message">Для продолжения работы задайте мастер пароль,
         он потребуется для доступа к сохраненным паролям в будущем.
-        В дальнейшем мастер пароль можно будет изменить в настройках(иконка шестиренки).
+        В дальнейшем мастер пароль можно будет изменить в настройках(иконка шестеренки).
     </string>
     <string name="ok_dialog_button_text">ОК</string>
     <string name="cancel_dialog_button_text">Назад</string>
