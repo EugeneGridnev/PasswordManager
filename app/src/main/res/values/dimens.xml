@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="card_elevation">4dp</dimen>
+    <dimen name="card_margin">4dp</dimen>
+    <dimen name="card_corner_radius">10dp</dimen>
+    <dimen name="card_padding">10dp</dimen>
+    <dimen name="card_image_width">36dp</dimen>
+    <dimen name="card_image_height">36dp</dimen>
+    <dimen name="card_corner_size">5dp</dimen>
+
+    <dimen name="card_text_view_style_margin">10dp</dimen>
+
+    <dimen name="password_layout_margin">5dp</dimen>
+
+    <dimen name="progress_padding">4dp</dimen>
+    <dimen name="progress_height">56dp</dimen>
+    
+    <dimen name="master_password_settings_icon_size">40dp</dimen>
+
+    <dimen name="master_password_edit_layout_padding">8dp</dimen>
+
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="list_name_margin">16dp</dimen>
+
+</resources>
