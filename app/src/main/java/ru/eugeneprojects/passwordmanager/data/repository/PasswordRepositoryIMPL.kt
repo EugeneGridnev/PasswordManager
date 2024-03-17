@@ -10,7 +10,7 @@ class PasswordRepositoryIMPL @Inject constructor(private val dao: PasswordDao) :
     }
 
     override suspend fun delete(password: Password) {
-
+        dao.delete(password)
     }
 
     override suspend fun update(password: Password) {

@@ -14,15 +14,28 @@ class PasswordPagingAdapter : PagingDataAdapter<Password, PasswordPagingAdapter.
 
     private var onItemClickListener: ((Password) -> Unit)? = null
 
-    inner class PasswordViewHolder(val binding: PasswordListItemBinding)
+    inner class PasswordViewHolder(private val binding: PasswordListItemBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
+        var item: Password? = null
+            private set
+
         fun bind(password: Password, onClickListener: ((Password) -> Unit)? = null) {
+
+            item = password
 
             Glide.with(itemView)
                 .load(itemView.context.getText(R.string.icon_prefix).toString()
                         + password.passwordSiteUrl
                         + itemView.context.getText(R.string.icon_postfix).toString())
+                .error(
+                    Glide.with(itemView)
+                        .load(itemView.context.getText(R.string.icon_prefix_fallback).toString()
+                                + password.passwordSiteUrl
+                                + itemView.context.getText(R.string.icon_postfix).toString())
+                        .placeholder(R.drawable.ic_image_placeholder)
+                        .error(R.drawable.ic_image_placeholder)
+                )
                 .placeholder(R.drawable.ic_image_placeholder)
                 .into(binding.imageViewPasswordImage)
             binding.textViewProductTitle.text = password.passwordSiteName

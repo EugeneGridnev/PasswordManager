@@ -1,6 +1,7 @@
 package ru.eugeneprojects.passwordmanager.data.room
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
@@ -12,7 +13,8 @@ interface PasswordDao {
     @Insert(onConflict = REPLACE)
     suspend fun insert(password: Password): Long
 
-    //suspend fun delete(passwordId: Int)
+    @Delete
+    suspend fun delete(password: Password): Int
 
     @Update
     suspend fun update(password: Password): Int

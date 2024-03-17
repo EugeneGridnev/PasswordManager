@@ -21,6 +21,8 @@
     <string name="master_password_changed_toast">Мастер пароль изменен</string>
     <string name="master_password_empty_error">Заполните поле</string>
     <string name="master_password_wrong_error">Неверный пароль</string>
+    <string name="password_empty_error">Пароль не может быть пустым</string>
     <string name="icon_prefix">https://</string>
+    <string name="icon_prefix_fallback">http://</string>
     <string name="icon_postfix">/favicon.ico</string>
 </resources>

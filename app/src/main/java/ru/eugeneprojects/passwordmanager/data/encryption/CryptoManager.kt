@@ -9,8 +9,9 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
+import javax.inject.Inject
 
-class CryptoManager {
+class CryptoManager @Inject constructor() {
 
     private val keyStore = KeyStore.getInstance("AndroidKeyStore").apply {
         load(null)

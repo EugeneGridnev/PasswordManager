@@ -9,8 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import ru.eugeneprojects.passwordmanager.R
 import ru.eugeneprojects.passwordmanager.adapters.PasswordLoadStateAdapter
@@ -29,12 +32,10 @@ class PasswordListFragment : Fragment() {
 
     private var binding: FragmentPasswordListBinding? = null
 
-
-    private var refresh = false
     private lateinit var adapter: PasswordPagingAdapter
     private lateinit var viewModel: PasswordListViewModel
 
-    @Inject lateinit var sharedPreferenceManager: SharedPreferenceManager
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,19 +64,30 @@ class PasswordListFragment : Fragment() {
 
         setOnListItemClick(adapter)
 
-        lifecycleScope.launch {
-            viewModel.data.collectLatest {
-                adapter.submitData(it)
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT){
+            override fun onMove(
+                recyclerView: RecyclerView,
+                source: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
             }
-        }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        if(refresh) {
-            adapter.refresh()
-            refresh = false
-        }
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                if (viewHolder is PasswordPagingAdapter.PasswordViewHolder) {
+                    viewHolder.item?.let { item ->
+                        lifecycleScope.launch {
+                            viewModel.deleteItem(item)
+                        }
+                    }
+                }
+            }
+
+        })
+        itemTouchHelper.attachToRecyclerView(binding?.recyclerViewPasswordsList)
+
+        observeData(adapter)
+
     }
 
     override fun onDestroyView() {
@@ -86,7 +98,6 @@ class PasswordListFragment : Fragment() {
     private fun setAddNewPasswordFAB() {
 
         binding?.fabAddPassword?.setOnClickListener {
-            refresh = true
             findNavController().navigate(R.id.action_passwordListFragment_to_passwordFragment)
         }
     }
@@ -105,22 +116,22 @@ class PasswordListFragment : Fragment() {
 
     private fun showChangeMasterPasswordDialog() {
         ChangeMasterPasswordDialogFragment.show(parentFragmentManager,
-            sharedPreferenceManager.getMasterPasswordExistInPref()!!
+            viewModel.masterPassword!!
         )
         ChangeMasterPasswordDialogFragment.setUpListener(parentFragmentManager, this){
-            sharedPreferenceManager.saveMasterPasswordInPref(it)
+            viewModel.setMasterPassword(it)
             Toast.makeText(context, R.string.master_password_changed_toast, Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun showItemAccessDialog(item: Password) {
-        MasterPasswordDialogFragment.show(parentFragmentManager, sharedPreferenceManager.getMasterPasswordExistInPref().toString())
+        MasterPasswordDialogFragment.show(parentFragmentManager, viewModel.masterPassword?: "")
         MasterPasswordDialogFragment.setUpListener(parentFragmentManager, this) {
             if (it) {
                 val bundle = Bundle().apply {
                     putParcelable("password", item)
                 }
-                refresh = true
+
                 findNavController().navigate(
                     R.id.action_passwordListFragment_to_passwordFragment,
                     bundle
@@ -131,7 +142,7 @@ class PasswordListFragment : Fragment() {
 
     private fun showFirstTimeAccessDialog() {
 
-        if (!sharedPreferenceManager.isMasterPasswordExistInPref()) {
+        if (!viewModel.isMasterPasswordExists()) {
             FirstTimeDialogFragment.show(parentFragmentManager)
             setUpFirstTimeDialogFragmentListener()
         }
@@ -139,8 +150,16 @@ class PasswordListFragment : Fragment() {
 
     private fun setUpFirstTimeDialogFragmentListener() {
         FirstTimeDialogFragment.setUpListener(parentFragmentManager, this) {
-            sharedPreferenceManager.saveMasterPasswordInPref(it)
+            viewModel.setMasterPassword(it)
             Toast.makeText(context, R.string.master_password_created_toast, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun observeData(adapter: PasswordPagingAdapter) {
+        lifecycleScope.launch {
+            viewModel.data.collectLatest {
+                adapter.submitData(it)
+            }
         }
     }
 }
