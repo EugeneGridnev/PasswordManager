@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import ru.eugeneprojects.passwordmanager.data.models.Password
 import ru.eugeneprojects.passwordmanager.data.repository.PasswordRepository
 import ru.eugeneprojects.passwordmanager.data.repository.paging.PasswordPagingSource
-import ru.eugeneprojects.passwordmanager.encryption.CryptoManager
+import ru.eugeneprojects.passwordmanager.data.encryption.CryptoManager
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,7 +33,14 @@ class PasswordListViewModel @Inject constructor (
         PasswordPagingSource(repository)
     }.flow.cachedIn(viewModelScope)
 
-    suspend fun updatePassword(password: Password) = repository.update(password)
+    suspend fun updatePassword(passwordId: Int, passwordName: String, passwordUrl: String, passwordValue: String) {
+        repository.update(Password(
+            passwordId,
+            passwordName,
+            passwordUrl,
+            cryptoManager.encrypt(passwordValue)
+        ))
+    }
 
     suspend fun addPassword(passwordId: Int, passwordName: String, passwordUrl: String, passwordValue: String) {
 
@@ -41,8 +48,10 @@ class PasswordListViewModel @Inject constructor (
             passwordId,
             passwordName,
             passwordUrl,
-            cryptoManager.encrypt(passwordValue.toByteArray()).toString()
+            cryptoManager.encrypt(passwordValue)
         ))
     }
+
+    fun decrypt(data: String) = cryptoManager.decrypt(data)
 
 }

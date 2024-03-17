@@ -1,7 +1,8 @@
-package ru.eugeneprojects.passwordmanager.encryption
+package ru.eugeneprojects.passwordmanager.data.encryption
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import android.util.Base64
 import java.io.InputStream
 import java.security.KeyStore
 import javax.crypto.Cipher
@@ -13,20 +14,6 @@ class CryptoManager {
 
     private val keyStore = KeyStore.getInstance("AndroidKeyStore").apply {
         load(null)
-    }
-
-    private val encryptCipher get() = Cipher.getInstance(TRANSFORMATION).apply {
-        init(Cipher.ENCRYPT_MODE, getKey())
-    }
-
-    private val decryptCipher get() = Cipher.getInstance(TRANSFORMATION).apply {
-        init(Cipher.DECRYPT_MODE, getKey(), IvParameterSpec(ByteArray(IV.length)))
-    }
-
-    private fun getDecryptCipherForIv(iv: ByteArray): Cipher {
-        return Cipher.getInstance(TRANSFORMATION).apply {
-            init(Cipher.DECRYPT_MODE, getKey(), IvParameterSpec(iv))
-        }
     }
 
     private fun getKey(): SecretKey {
@@ -50,29 +37,32 @@ class CryptoManager {
         }.generateKey()
     }
 
-    fun encrypt(bytes: ByteArray): ByteArray {
-        return encryptCipher.doFinal(bytes)
+    fun encrypt(data: String): String {
+        val cipher = Cipher.getInstance(TRANSFORMATION)
+        cipher.init(Cipher.ENCRYPT_MODE, getKey())
+
+        val encryptedBytes = cipher.doFinal(data.toByteArray())
+        val iv = cipher.iv
+
+        val encryptedDataWithIV = ByteArray(iv.size + encryptedBytes.size)
+        System.arraycopy(iv, 0, encryptedDataWithIV, 0, iv.size)
+        System.arraycopy(encryptedBytes, 0, encryptedDataWithIV, iv.size, encryptedBytes.size)
+        return Base64.encodeToString(encryptedDataWithIV, Base64.DEFAULT)
     }
 
-    fun decrypt(encryptedBytes: ByteArray): ByteArray {
+    fun decrypt(data: String): String {
+        val encryptedDataWithIV = Base64.decode(data, Base64.DEFAULT)
+        val cipher = Cipher.getInstance(TRANSFORMATION)
+        val iv = encryptedDataWithIV.copyOfRange(0, cipher.blockSize)
+        cipher.init(Cipher.DECRYPT_MODE, getKey(), IvParameterSpec(iv))
 
-        return decryptCipher.doFinal(encryptedBytes)
-//
-//        return inputStream.use {
-//            val ivSize = it.read()
-//            val iv = ByteArray(ivSize)
-//            it.read(iv)
-//
-//            val encryptedBytesSize = it.read()
-//            val encryptedBytes = ByteArray(encryptedBytesSize)
-//            it.read(encryptedBytes)
-//
-//            getDecryptCipherForIv(iv).doFinal(encryptedBytes)
-//        }
+        val encryptedData = encryptedDataWithIV.copyOfRange(cipher.blockSize, encryptedDataWithIV.size)
+        val decryptedBytes = cipher.doFinal(encryptedData)
+        return String(decryptedBytes, Charsets.UTF_8)
+
     }
 
     companion object {
-        private const val IV = "abcdefgh"
         private const val ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
         private const val BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC
         private const val PADDING = KeyProperties.ENCRYPTION_PADDING_PKCS7
